@@ -18,15 +18,17 @@ def remove_duplicates():
   db.query(rm_query)
   print "new length: %s" % len([r for r in articles.all()])
 
+def update_data(data):
+  for d in data:
+    articles.update(d, ["id"]) 
+
 def add_social_media_count():
   print "adding social media sum..."
   query = """SELECT id, 
                fb_total + google_plus_ones + twitter_shares as social_media
              FROM articles"""
   data = [row for row in db.query(query)]
-  for d in data:
-    articles.update(d, ["id"])
- 
+  update_data(data)
 
 def add_min_to_read():
   print "adding minutes to read..."
@@ -44,8 +46,7 @@ def add_min_to_read():
     new_data.append(new_row)
 
   # update databse
-  for d in new_data:
-    articles.update(d, ['id'])
+  update_data(new_data)
 
 def add_normalized_lexicon_pers():
   print "adding normalized lexicon percentages..."
@@ -73,8 +74,7 @@ def add_normalized_lexicon_pers():
     new_data.append(new_row)
 
   # insert new data
-  for d in new_data:
-    articles.update(d, ['id'])
+  update_data(new_data)
 
 def z_score(vec, na2zero, log):
 
@@ -132,8 +132,8 @@ def add_z_score_for_column_name(col_name, na2zero, log):
   new_col_name = col_name + "_z" 
   new_data = [{"id" : i[0] , new_col_name : i[1]} for i in items]
 
-  for new_datum in new_data:
-    articles.update(new_datum, ["id"])
+  # update database
+  update_data(new_data)
 
 def post_process_db():
   remove_duplicates()
