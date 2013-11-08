@@ -1,5 +1,6 @@
-import dataset
 import json
+
+from complicity.common import articles, newspapers, db
 
 def parse_file(f):
 
@@ -30,10 +31,7 @@ def parse_file(f):
 def files_to_database(easy=True):
 
   # connect to database
-  db = dataset.connect('postgresql://brian:mc@localhost:5432/news')
-  table = db['newspapers']
-  # table.delete()
-  # table = db['newspapers']
+  # newspapers.delete()
 
   if not easy:
     # read in list of json files
@@ -43,11 +41,11 @@ def files_to_database(easy=True):
     for i, f in enumerate(file_list):
 
       # parse and insert
-      table.insert_many(parse_file(f)) 
+      newspapers.insert_many(parse_file(f)) 
 
   else:
     data = json.load(open('all-newspapers.json'))['results']
-    table.insert_many(data)
+    newspapers.insert_many(data)
 
 if __name__ == '__main__':
   files_to_database()
