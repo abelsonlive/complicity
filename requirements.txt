@@ -10,3 +10,4 @@ git+git://github.com/nltk/nltk_contrib.git
 git+git://github.com/pudo/thready.git
 git+git://github.com/originell/jpype.git
 git+git://github.com/misja/python-boilerpipe.git
+flask
