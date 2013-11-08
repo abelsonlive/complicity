@@ -8,15 +8,12 @@ from string import punctuation
 from nltk import clean_html
 import re
 
-################################################################################
 def remove_non_ascii(string):
   """
   Remove all non-ascii characters from input string
   """
   return ''.join(character for character in string if ord(character)<128)
 
-
-################################################################################
 def remove_URLs(string):
   """
   Remove all URLs from input string
@@ -24,12 +21,20 @@ def remove_URLs(string):
   pattern = r'((http|ftp|https):\/\/)?[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?'
   return re.sub(pattern, ' ', string)
 
-def clean_text(text, html=False, digits=False, urls=False, ascii=False):
+def clean_text(
+      text, 
+      html=False, 
+      digits=False, 
+      urls=False, 
+      ascii=False
+  ):
   """
   Remove html, digits, weird white space, URLs, non-ascii chars from raw text
   """
-  from nltk import clean_html
-  import re
+  # text is none, return an empty string
+  if text is None:
+    return ''
+
   if html is False:
     # strip html markup
     text = clean_html(text)
@@ -42,14 +47,20 @@ def clean_text(text, html=False, digits=False, urls=False, ascii=False):
   if ascii is False:
     # remove all non-ascii characters
     text = remove_non_ascii(text)
-  text = re.sub(r'\s+', ' ', text) # standardize white space
+
+  # standardize white space
+  text = re.sub(r'\s+', ' ', text) 
+
+  # return 
   return text
 
-def tokenize_and_normalize_text(text,
-                wordpunct=True,
-                filter_stopwords=True,
-                normalizer='wordnet',
-                lang='english'):
+def tokenize_and_normalize_text(
+      text,
+      wordpunct=True,
+      filter_stopwords=True,
+      normalizer='wordnet',
+      lang='english'
+  ):
   """
   Remove stopwords, bare punctuation, capitalization; lemmatize or stem words
 
@@ -137,7 +148,7 @@ def make_gensim_corpus_from_texts(texts, **kwargs):
   lang = kwargs.get('lang', 'english')
 
   # clean texts
-  cleaned_texts = [clean_text(str(t)) for t in text]
+  cleaned_texts = [clean_text(t) for t in texts]
 
   # normalize texts
   normed_texts = [
