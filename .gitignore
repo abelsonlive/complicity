@@ -1,8 +1,10 @@
+# crud
 .DS_Store
 */.DS_Store
 */*/*.DS_Store
 *.pyc
 */*.pyc
+*/*/*.pyc
 
 data/
-raw-data/
+raw_data/
