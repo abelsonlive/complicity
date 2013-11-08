@@ -21,7 +21,7 @@ tfidf = TfidfModel(corpus)
 tfidf_corpus = tfidf[corpus]
 
 print "fitting model"
-num_topics = 10
+num_topics = 30
 lda = LdaModel(corpus = tfidf_corpus, id2word = id2word, num_topics = num_topics)
 topics = lda.show_topics(num_topics)
 for i, t in enumerate(topics):

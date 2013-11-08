@@ -157,7 +157,7 @@ def tokenize_and_normalize_text(
 
   return norm_words
 
-def remove_infrequent_words(texts, min_freq=2):
+def remove_infrequent_words(texts, min_freq=5):
   # count words across all corpora
   counts = {}
   for text in texts:
