@@ -89,7 +89,7 @@ def parse_one_entry(feed_item):
   complete_datum.pop('id', None)
   
   # upsert the data
-  table.upsert(complete_datum, ["url"])
+  table.insert(complete_datum, ["url"])
   
 
 def parse_one_feed(newspaper_datum):
