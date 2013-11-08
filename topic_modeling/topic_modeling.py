@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import dataset
-from text_processing import make_gensim_corpus_from_texts
+from text_processing import make_gensim_corpus_and_dicionary_from_texts
 
 db = dataset.connect('postgresql://brian:mc@localhost:5432/news')
 
