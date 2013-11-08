@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import sys
+import os
 import re, string
 import pprint
 import math
@@ -27,10 +28,12 @@ from functools import wraps
 import unicodedata
 
 # LEXICONS
-bias_words = [line for line in open('lexicons/bias-lexicon.txt').read().split("\n") if line !='']
-neg_words = [line for line in open("lexicons/positive-lexicon.txt").read().split("\n") if line !='']
-pos_words = [line for line in open("lexicons/negative-lexicon.txt").read().split("\n") if line !='']
-liwc = json.load(open("lexicons/liwc-lexicon.json"))
+lexicon_dir = os.path.join(os.path.dirname(__file__), 'lexicons')
+
+bias_words = [line for line in open(lexicon_dir + '/bias-lexicon.txt').read().split("\n") if line !='']
+neg_words = [line for line in open(lexicon_dir + "/positive-lexicon.txt").read().split("\n") if line !='']
+pos_words = [line for line in open(lexicon_dir + "/negative-lexicon.txt").read().split("\n") if line !='']
+liwc = json.load(open(lexicon_dir + "/liwc-lexicon.json"))
 
 # html stripping
 class MLStripper(HTMLParser):
