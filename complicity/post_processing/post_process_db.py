@@ -1,6 +1,4 @@
-import dataset
-
-db = dataset.connect('postgresql://brian:mc@localhost:5432/news')
+from complicity.common import articles, db
 
 # query for removing duplicates
 rm_query = """
@@ -11,8 +9,8 @@ rm_query = """
   )
   DELETE FROM articles WHERE id NOT IN (SELECT id FROM pick)
 """
-print "old length: %s" % len([r for r in db['articles'].all()])
+print "old length: %s" % len([r for r in articles.all()])
 # remove duplicates
 db.query(rm_query)
-print "new length: %s" % len([r for r in db['articles'].all()])
+print "new length: %s" % len([r for r in articles.all()])
 
