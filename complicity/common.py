@@ -1,4 +1,4 @@
 import dataset
-db = dataset.connect('postgresql://brian:mc@localhost:5432/news')
+db = dataset.connect(os.getenv('DATABASE_URL'))
 articles = db['articles']
 newspapers = db['newspapers']
