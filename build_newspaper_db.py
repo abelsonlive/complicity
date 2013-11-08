@@ -37,7 +37,7 @@ def files_to_database(easy=True):
 
   if not easy:
     # read in list of json files
-    file_list = json.load(open('big-data-file.json'))
+    file_list = json.load(open('data/big-data-file.json'))
 
     # loop through list of json files
     for i, f in enumerate(file_list):
