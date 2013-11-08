@@ -3,3 +3,5 @@ dataset
 thready
 readability-lxml
 feedparser
+nltk
+nltk_contrib
