@@ -60,9 +60,9 @@ def add_normalized_lexicon_pers():
     if wc is not None and wc > 0:
       new_row = {
         'id' : d['id'],
-        'pos_word_per' : float(d['pos_word_count']) / float(wc),
-        'neg_word_per' : float(d['neg_word_count']) / float(wc),
-        'bias_word_per' : float(d['bias_word_count']) / float(wc)
+        'pos_word_per' : float(d['pos_word_count']) / float(wc) if d['pos_word_count'] is not None else None,
+        'neg_word_per' : float(d['neg_word_count']) / float(wc) if d['neg_word_count'] is not None else None,
+        'bias_word_per' : float(d['bias_word_count']) / float(wc) if d['bias_word_count'] is not None else None
       }
     else:
       new_row = {
