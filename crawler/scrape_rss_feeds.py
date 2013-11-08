@@ -48,7 +48,11 @@ def parse_one_entry(feed_item):
     clean_url = article_datum['url']
 
     # extract shared count data using the cleaned url
-    share_datum = shared_count(clean_url)
+    # sometimes this fails because of weird facebook formattting
+    try:
+      share_datum = shared_count(clean_url)
+    except:
+      share_datum = {}
 
     # extract text features
     text_features_datum = text_features(article_datum['content'])
@@ -64,8 +68,9 @@ def parse_one_entry(feed_item):
     #   translation_datum = {
     #     'english_content' : article_datum['content']
     #   }
-
+    print "upserting %s\n" % clean_url
   else:
+    print '**ERROR parsing %s' % url
     share_datum = {}
     text_features_datum = {}
     # translation_datum = {}
@@ -84,10 +89,8 @@ def parse_one_entry(feed_item):
   complete_datum.pop('id', None)
   
   # upsert the data
-  table.insert(complete_datum)
-
-  # announce successful scrape
-  print "upserted %s\n" % url
+  table.upsert(complete_datum, ["url"])
+  
 
 def parse_one_feed(newspaper_datum):
   """
@@ -99,7 +102,7 @@ def parse_one_feed(newspaper_datum):
   feed_items = zip_entries(feed_data['entries'], newspaper_datum)
 
   # thread that shit!
-  threaded(feed_items, parse_one_entry, 20, 1000)
+  threaded(feed_items, parse_one_entry, 3, 1000)
 
   # # debug mode:
   # for item in feed_items:
@@ -110,7 +113,7 @@ def parse_all_feeds(newspaper_data):
   parse all teh feedz
   """
   # thread that shit!
-  threaded(newspaper_data, parse_one_feed, 5, 25)
+  threaded(newspaper_data, parse_one_feed, 2, 25)
 
   # # debug mode:
   # for datum in newspaper_data:
