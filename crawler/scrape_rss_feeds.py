@@ -99,7 +99,7 @@ def parse_one_feed(newspaper_datum):
   feed_items = zip_entries(feed_data['entries'], newspaper_datum)
 
   # thread that shit!
-  threaded(feed_items, parse_one_entry, 10, 100)
+  threaded(feed_items, parse_one_entry, 20, 1000)
 
   # # debug mode:
   # for item in feed_items:
@@ -110,7 +110,7 @@ def parse_all_feeds(newspaper_data):
   parse all teh feedz
   """
   # thread that shit!
-  threaded(newspaper_data, parse_one_feed, 2, 20)
+  threaded(newspaper_data, parse_one_feed, 5, 25)
 
   # # debug mode:
   # for datum in newspaper_data:
