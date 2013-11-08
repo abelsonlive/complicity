@@ -1,17 +1,14 @@
 # -*- coding: utf-8 -*-
-import dataset
 import feedparser
 from thready import threaded
 
 # custom modules:
-from article_extractor import extract_article
-from shared_count import shared_count
-from google_translate import translate_to_english
-from text_features import text_features
+from complicity.common import articles, db
+from complicity.crawler.article_extractor import extract_article
+from complicity.crawler.shared_count import shared_count
+from complicity.crawler.google_translate import translate_to_english
+from complicity.crawler.text_features import text_features
 
-# connect to the database
-db = dataset.connect('postgresql://brian:mc@localhost:5432/news')
-table = db['articles']
 
 # query for existing rss feeds
 query = """ SELECT * from newspapers WHERE rss != '' and language = 'English' """
@@ -89,7 +86,7 @@ def parse_one_entry(feed_item):
   complete_datum.pop('id', None)
   
   # upsert the data
-  table.insert(complete_datum, ["url"])
+  articles.insert(complete_datum, ["url"])
   
 
 def parse_one_feed(newspaper_datum):
