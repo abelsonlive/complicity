@@ -101,7 +101,7 @@ def z_score(vec, na2zero, log):
   # calculate standard deviation safely
   arr_std = numpy.std(safe_arr)
 
-  # loop through entire array
+  # loop through and normalize array, replacing null values with zero
   arr_z = []
   for a in arr:
     if a is not None:
@@ -109,7 +109,7 @@ def z_score(vec, na2zero, log):
         a = numpy.log(a + 0.001)
       arr_z.append((a-arr_avg)/arr_std)
     else:
-      arr_z.append(None)
+      arr_z.append(0)
 
   return arr_z
 
