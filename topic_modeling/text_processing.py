@@ -1,12 +1,31 @@
 # -*- coding: utf-8 -*-
 from gensim import corpora
-from nltk.corpus import stopwords
 from nltk.stem import LancasterStemmer, PorterStemmer, SnowballStemmer
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize, wordpunct_tokenize
 from string import punctuation
-from nltk import clean_html
+from HTMLParser import HTMLParser
 import re
+
+# load in custom stopwords
+stopwords = [w.strip() for w in open('stopwords.txt').read().split('\n') if w != '']
+
+# html stripping
+class MLStripper(HTMLParser):
+    def __init__(self):
+        self.reset()
+        self.fed = []
+    def handle_data(self, d):
+        self.fed.append(d)
+    def get_data(self):
+        return ''.join(self.fed)
+
+def strip_tags(html):
+    s = MLStripper()
+    s.feed(html)
+    raw_text = s.get_data()
+    raw_text = re.sub(r'\n|\t', ' ', raw_text)
+    return re.sub('\s+', ' ', raw_text).strip()
 
 def remove_non_ascii(string):
   """
@@ -37,13 +56,16 @@ def clean_text(
 
   if html is False:
     # strip html markup
-    text = clean_html(text)
+    text = strip_tags(text)
+
   if digits is False:
     # remove digits
     text = re.sub(r'\d', ' ', text)
+
   if urls is False:
     # remove all urls
     text = remove_URLs(text)
+
   if ascii is False:
     # remove all non-ascii characters
     text = remove_non_ascii(text)
@@ -89,10 +111,10 @@ def tokenize_and_normalize_text(
     return None
 
   # check stopwords arg
-  if lang not in stopwords.fileids():
-    print '***ERROR: lang', lang, 'not in', stopwords.fileids(), '!'
-    return None
-  stops = set(stopwords.words(lang))
+  # if lang not in stopwords.fileids():
+  #   print '***ERROR: lang', lang, 'not in', stopwords.fileids(), '!'
+  #   return None
+  stops = set(stopwords)
 
   # toxenize words
   if wordpunct is True:
@@ -100,18 +122,18 @@ def tokenize_and_normalize_text(
   else:
     words = word_tokenize(text.lower())
 
+  # remove stopwords
   if filter_stopwords is True:
     good_words = (word for word in words
-            #if word not in list(punctuation)
             if not all([char in punctuation for char in word])
             and len(word) > 0 and len(word) < 25
             and word not in stops)
   else:
     good_words = (word for word in words
-            #if word not in list(punctuation)
             if not all([char in punctuation for char in word])
             and len(word) > 0 and len(word) < 25)
 
+  # normalize text
   normalizers = ['wordnet', 'porter', 'lancaster', 'snowball']
   if normalizer == 'wordnet':
     lemmatizer = WordNetLemmatizer()
@@ -135,7 +157,34 @@ def tokenize_and_normalize_text(
 
   return norm_words
 
-def make_gensim_corpus_and_dicionary_from_texts(texts, **kwargs):
+def remove_infrequent_words(texts, min_freq=2):
+  # count words across all corpora
+  counts = {}
+  for text in texts:
+    for word in text:
+      if counts.has_key(word):
+        counts[word] += 1
+      else:
+        counts[word] = 1
+  # filter out infrequent words    
+  cleaned_texts = [] 
+  for text in texts:
+    cleaned_text = []
+    for word in text:
+      if counts[word] >= min_freq:
+        cleaned_text.append(word)
+
+    # reconstruct texts
+    cleaned_texts.append(cleaned_text)
+
+  # return
+  return cleaned_texts
+
+def make_gensim_corpus_and_dicionary_from_texts(
+      texts, 
+      rm_infrequent = True,
+      **kwargs
+  ):
   """
   Given a list of texts, cleans and normalizes text then
   returns a dictionary of word<->ID mappings
@@ -150,6 +199,10 @@ def make_gensim_corpus_and_dicionary_from_texts(texts, **kwargs):
   normalizer = kwargs.get('normalizer', 'wordnet')
   lang = kwargs.get('lang', 'english')
 
+  filter_stopwords = True
+  normalizer = 'wordnet'
+  lang = 'english'
+
   # clean texts
   cleaned_texts = [clean_text(t) for t in texts]
 
@@ -163,8 +216,14 @@ def make_gensim_corpus_and_dicionary_from_texts(texts, **kwargs):
     )
     for t in cleaned_texts
   ]
+
+  # remove infrequent words
+  if rm_infrequent:
+    normed_texts = remove_infrequent_words(normed_texts)
+
   # convert to gensim corpus and dictionary
-  texts = [list(text) for text in normed_texts]
-  dictionary = corpora.Dictionary(texts)
-  corpus = [dictionary.doc2bow(text) for text in texts]
-  return corpus, dictionary
+  id2word = corpora.Dictionary(normed_texts)
+  corpus = [id2word.doc2bow(text) for text in normed_texts]
+
+  # return
+  return corpus, id2word
