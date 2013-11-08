@@ -44,11 +44,10 @@ def files_to_database(easy=True):
 
       # parse and insert
       table.insert_many(parse_file(f)) 
-      
+
   else:
-    table.insert_many(json.load(open('all-newspapers.json')))
-
-
+    data = json.load(open('all-newspapers.json'))['results']
+    table.insert_many(data)
 
 if __name__ == '__main__':
   files_to_database()
