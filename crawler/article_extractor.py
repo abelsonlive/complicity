@@ -3,6 +3,7 @@
 from readability.readability import Document
 import requests
 from HTMLParser import HTMLParser
+from urlparse import urlparse
 import re
 
 # html stripping
@@ -22,14 +23,18 @@ def strip_tags(html):
     raw_text = re.sub(r'\n|\t', ' ', raw_text)
     return re.sub('\s+', ' ', raw_text).strip()
 
+def parse_url(url):
+  o = urlparse(url)
+  return "%s://%s%s" % (o.scheme, o.netloc, o.path)
+
 def extract_article(url):
   r = requests.get(url)
   
   # the the url exists, continue
   if r.status_code == 200:
     
-    # extract response url
-    url = r.url
+    # extract and parse response url
+    url = parse_url(r.url)
 
     # extract html
     html = r.content.decode('utf-8', errors='ignore')

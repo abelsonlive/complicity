@@ -135,12 +135,15 @@ def tokenize_and_normalize_text(
 
   return norm_words
 
-def make_gensim_corpus_from_texts(texts, **kwargs):
+def make_gensim_corpus_and_dicionary_from_texts(texts, **kwargs):
   """
   Given a list of texts, cleans and normalizes text then
   returns a dictionary of word<->ID mappings
   and a corpus of sparse vectors of bag-of-word-IDs
   """
+  # ensure that texts is a list
+  if isinstance(texts, basestring):
+    texts = [texts]
 
   # parse args
   filter_stopwords = kwargs.get('filter_stopwords', True)
@@ -160,6 +163,8 @@ def make_gensim_corpus_from_texts(texts, **kwargs):
     )
     for t in cleaned_texts
   ]
-  # convert to gensim corpus
+  # convert to gensim corpus and dictionary
   texts = [list(text) for text in normed_texts]
-  return corpora.Dictionary(texts)
+  dictionary = corpora.Dictionary(texts)
+  corpus = [dictionary.doc2bow(text) for text in texts]
+  return corpus, dictionary
