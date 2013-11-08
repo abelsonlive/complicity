@@ -3,6 +3,7 @@
 */*/*.DS_Store
 *.pyc
 */*.pyc
+*.egg-info
 
 data/
 raw-data/
