@@ -8,3 +8,4 @@
 
 data/
 raw_data/
+*.egg-info
