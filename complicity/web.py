@@ -39,6 +39,14 @@ def jsonify(obj, status=200, headers=None):
                     status=status, mimetype='application/json')
 
 
+@app.route("/sql")
+def sql():
+  # parse args  
+  query = request.args.get('q', None)
+
+  # return json 
+  return jsonify([row for row in db.query(query)])
+
 @app.route("/")
 def index():
   # parse args  
