@@ -1,47 +1,20 @@
-complicity
+bubble-up
 ===========
-_hackers + journalists_
+bubble-up is an app for reccomending articles based on user's preferences
+<br/>
+_built at [Complicity - 2013](http://berlinergazette.de/symposium/complicity/) by 
+[@brianabelson](http://twitter.com/brianabelson), [@annabelchurch](http://twitter.com/annabelchurch),
+and [@pudo](http://twitter.com/pudo)_
+<br/>
 
-## brainstorming
-_Aggregation plugin_
+## How do I get started?
+1. Create a [postgres](http://www.postgresql.com/) database called `news` (or whatever you want)
+2. Create an environmental variable called `DATABASE_URL` with your database path, e.g. `export DATABASE_URL=postgresql://brian:mc@localhost:5432/news`
+3. Build the database of newspapers using `build_newspaper_db.py`, which sources data from [NewspaperMap](http://www.newspapermap.com/)
+4. Build the database of articles using `scrape_rss_feeds.py`
+5. Run `web.py` to host the api
 
-#### current issues
-- Algorithms make decisions about what content you have access to.
-- Can we make a sorting / filtering / aggregation platform that is transparent and democratic?
-- CC-only sites?
-- When you read a physical newspaper you stumble upon surprising issues / topics
-  * culture alongside politics, sports alongside art
-- How can you collect
-
-#### what is dangerous about aggregation?
-- motives / algorithmic logic / priorities / agenda are not open
-- 
-
-#### tool building vs. prototyping
-- 
-- 
-
-#### multilingual / multicultural interfaces
-- We don't have to know, we have to cull / find our way.
-- A 'Smarter Google' - one that does not tailor the filter to you but to the idea / topic.
-- subject matrix 
-
-#### prioritization of a news organization vs. it's users.
-- Make aggregation and filtering transparent
-- Surfacing content from other languages
-- 
-
-#### FILTERING
-- space for new voices
-- articles that are less shared / more shared.
-- articles that were published longer ago / more recent
-- articles that are more related / less related to current article
-- citizen journalists vs. mainstream media
-- people contribute sources / metadata about the sources
--  
-- I don't want articles that people are reading already.
-
-
-
-
-
+## What's in store?  
+I'm hoping to build an intelligent way of determining article similarity via textual features _on-the-fly_.
+<br/>
+my experiments with this can be found in `topic_modeling/`
