@@ -157,7 +157,7 @@ def tokenize_and_normalize_text(
 
   return norm_words
 
-def remove_infrequent_words(texts, min_freq=5):
+def remove_infrequent_words(texts, min_freq=2):
   # count words across all corpora
   counts = {}
   for text in texts:
@@ -166,6 +166,7 @@ def remove_infrequent_words(texts, min_freq=5):
         counts[word] += 1
       else:
         counts[word] = 1
+
   # filter out infrequent words    
   cleaned_texts = [] 
   for text in texts:
@@ -180,9 +181,8 @@ def remove_infrequent_words(texts, min_freq=5):
   # return
   return cleaned_texts
 
-def make_gensim_corpus_and_dicionary_from_texts(
+def process_texts(
       texts, 
-      rm_infrequent = True,
       **kwargs
   ):
   """
@@ -196,12 +196,10 @@ def make_gensim_corpus_and_dicionary_from_texts(
 
   # parse args
   filter_stopwords = kwargs.get('filter_stopwords', True)
-  normalizer = kwargs.get('normalizer', 'wordnet')
+  normalizer = kwargs.get('normalizer', 'porter')
   lang = kwargs.get('lang', 'english')
-
-  filter_stopwords = True
-  normalizer = 'wordnet'
-  lang = 'english'
+  rm_infrequent = kwargs.get('rm_infrequent', True)
+  min_freq = kwargs.get('min_freq', 2)
 
   # clean texts
   cleaned_texts = [clean_text(t) for t in texts]
@@ -211,7 +209,7 @@ def make_gensim_corpus_and_dicionary_from_texts(
     tokenize_and_normalize_text(
       text=t, 
       filter_stopwords=filter_stopwords,
-      normalizer=normalizer,
+      normalizer = normalizer,
       lang=lang
     )
     for t in cleaned_texts
@@ -219,7 +217,10 @@ def make_gensim_corpus_and_dicionary_from_texts(
 
   # remove infrequent words
   if rm_infrequent:
-    normed_texts = remove_infrequent_words(normed_texts)
+    normed_texts = remove_infrequent_words(
+      texts = normed_texts, 
+      min_freq = min_freq
+    )
 
   # convert to gensim corpus and dictionary
   id2word = corpora.Dictionary(normed_texts)

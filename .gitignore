@@ -12,3 +12,4 @@ raw_data/
 build/
 dist/
 .env
+complicity/topic_modeling/pickles/

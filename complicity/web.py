@@ -5,6 +5,7 @@ from flask import Response, request
 from flask import Flask
 
 from complicity import default_settings
+from complicity.common import db
 
 app = Flask(__name__)
 app.config.from_object(default_settings)
@@ -40,10 +41,14 @@ def jsonify(obj, status=200, headers=None):
 
 @app.route("/")
 def index():
-    return jsonify({'status': 'ok'})
+  # parse args  
+  query = request.args.get('q', None)
+
+  # return json 
+  return jsonify([row for row in db.query(query)])
 
 if __name__ == '__main__':
-    app.debug = True
+    app.debug = default_settings.DEBUG
     app.run(port=5006)
 
 

@@ -1,3 +1,16 @@
+article
+articles
+content
+comments
+comment
+subscription
+subscribe
+subscriber
+access
+free
+view
+outbrain
+
 a
 mr.
 mr
